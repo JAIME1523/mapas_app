@@ -7,7 +7,9 @@ class MapView extends StatelessWidget {
   final LatLng initialLocation;
   final Set<Polyline> polylines;
 
-  const MapView({Key? key, required this.initialLocation, required this.polylines}) : super(key: key);
+  const MapView(
+      {Key? key, required this.initialLocation, required this.polylines})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +23,7 @@ class MapView extends StatelessWidget {
         height: size.height,
         child: Listener(
           onPointerMove: (poiterMove) {
-             mapBLoc.add(const OnStopFollowingUseEvent());
-
+            mapBLoc.add(const OnStopFollowingUseEvent());
           },
           child: GoogleMap(
             initialCameraPosition: initialCameraPosition,
@@ -32,6 +33,9 @@ class MapView extends StatelessWidget {
             polylines: polylines,
             onMapCreated: ((controller) =>
                 mapBLoc.add(OnMapInitializedEvent(controller))),
+            onCameraMove: (position) {
+              mapBLoc.mapCenter = position.target;
+            },
           ),
         ));
   }

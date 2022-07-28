@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:mapas_app/blocs/blocs.dart';
 
+import 'package:mapas_app/blocs/blocs.dart';
 import 'package:mapas_app/views/views.dart';
 import 'package:mapas_app/widgets/widgets.dart';
 
@@ -57,6 +57,8 @@ class _MapScreenState extends State<MapScreen> {
                           ),
 
                           // TODO: botones...
+                          const SearchBar(),
+                         const ManualMarker(),
 
                           // Center(child:Text('${state.lasKnownLocation!}') ,)
                         ],
