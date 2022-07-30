@@ -18,6 +18,14 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         (event, emit) => emit(state.copyWith(displayManualMarker: true)));
     on<OnInactiviteMnaulaMarkerEvent>(
         (event, emit) => emit(state.copyWith(displayManualMarker: false)));
+
+    on<OnNewPlacesFoundEvent>(
+      (event, emit) => emit(state.copyWith(places: event.places)),
+    );
+    //Todo el ultimo element al incio
+    //on addToHIstory
+    on<AddToHistoryEvent>((event, emit) =>
+        emit(state.copyWith(history: [event.place, ...state.history])));
   }
 
   Future<RouteDestination> getCoorsStartToend(LatLng start, end) async {
@@ -30,10 +38,33 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
     //decodificar
     final point = decodePolyline(geometry, accuracyExponent: 6);
-    
-    final latLngList = point.map((coor)=> LatLng(coor[0].toDouble(), coor[1].toDouble())).toList();
+
+    final latLngList = point
+        .map((coor) => LatLng(coor[0].toDouble(), coor[1].toDouble()))
+        .toList();
 
     return RouteDestination(
-        distance: distance, duration: duracion, points: latLngList );
+        distance: distance, duration: duracion, points: latLngList);
+  }
+
+  Future getPlaceByQuery(String query) async {
+    if (query.isEmpty || query == '') {
+      final List<PlacesResponce> newPlaces = [];
+      add(OnNewPlacesFoundEvent(newPlaces));
+      return;
+    }
+    final newPlaces = await trafficService.getReseultByQuery(query);
+
+    //todo por aqui tenemos almacer el state
+    add(OnNewPlacesFoundEvent(newPlaces));
+  }
+
+  void _onaddToHIstory(AddToHistoryEvent event, Emitter<SearchState> emit) {
+    List<PlacesResponce> lista = state.history;
+    lista.add(event.place);
+    emit(state.copyWith(history: lista));
+    // emit(state.copyWith(followingUser: true));
+    // if (locationBloc.state.lasKnownLocation == null) return;
+    // moveCamera(locationBloc.state.lasKnownLocation!);
   }
 }

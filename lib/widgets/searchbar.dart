@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:mapas_app/blocs/blocs.dart';
 import 'package:mapas_app/delegates/delegates.dart';
+import 'package:mapas_app/helpers/helpers.dart';
 import 'package:mapas_app/models/models.dart';
 
 class SearchBar extends StatelessWidget {
@@ -26,12 +27,31 @@ class SearchBar extends StatelessWidget {
 class _SearchBarBody extends StatelessWidget {
   const _SearchBarBody({Key? key}) : super(key: key);
 
-  void onSearchResult(BuildContext context, SearchResut result) {
+  void onSearchResult(BuildContext context, SearchResut result) async {
     final searchBloc = BlocProvider.of<SearchBloc>(context);
+    final locationhBloc = BlocProvider.of<LocationBloc>(context);
+    final mapBloc = BlocProvider.of<MapBloc>(context);
+
     if (result.manual == true) {
       searchBloc.add(OnActivateManualMarkerEvent());
       return;
     }
+    if (result.position != null) {
+      final start = locationhBloc.state.lasKnownLocation;
+
+      if (start == null) return;
+      final end = result.position;
+      if (end == null) return;
+
+      //Confirmar ubicacion
+      ShowLoadingMessage(context);
+      final destination = await searchBloc.getCoorsStartToend(start, end);
+      mapBloc.drawRotatePolyline(destination);
+      Navigator.pop(context);
+
+    }
+
+    //revisar si tienemos el objeto resul,position;
   }
 
   @override
