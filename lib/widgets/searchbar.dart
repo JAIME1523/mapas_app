@@ -48,7 +48,6 @@ class _SearchBarBody extends StatelessWidget {
       final destination = await searchBloc.getCoorsStartToend(start, end);
       mapBloc.drawRotatePolyline(destination);
       Navigator.pop(context);
-
     }
 
     //revisar si tienemos el objeto resul,position;

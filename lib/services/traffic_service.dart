@@ -8,15 +8,18 @@ import 'package:mapas_app/services/services.dart';
 class TrafficService {
   final Dio _dioTraffic;
   final Dio _dioPLaces;
+  final Dio _dioBase;
 
   final String _baseTrafficUrl = 'https://us1.locationiq.com/v1/directions';
 
   final String _basePlaces = 'https://api.locationiq.com/v1/autocomplete.php';
+  final String _baseUrl = 'https://us1.locationiq.com/v1';
 
   TrafficService()
       : _dioTraffic = Dio()..interceptors.add(TrafficInterceptor()),
-        _dioPLaces = Dio()
-          ..interceptors.add(PlacesInterceptor()); //configurar interseptores
+        _dioPLaces = Dio()..interceptors.add(PlacesInterceptor()),
+        _dioBase = Dio()
+          ..interceptors.add(ReverseInterseptor()); //configurar interseptores
 
   // Future<TrafficResponce> getCoorsStartToend(LatLng start, end) async {
   Future getCoorsStartToend(LatLng start, end) async {
@@ -32,7 +35,7 @@ class TrafficService {
   }
 
   Future getReseultByQuery(String query) async {
-  List<PlacesResponce> listaDireccion = [];
+    List<PlacesResponce> listaDireccion = [];
 
     if (query.isEmpty) return [];
     final url = '$_basePlaces?q=$query';
@@ -45,5 +48,17 @@ class TrafficService {
     }
 
     return listaDireccion;
+  }
+
+  Future<PlacesResponce> getInformationByCoors(LatLng coors) async {
+    final coorString = '${coors.longitude},${coors.latitude}';
+    print('${coors.longitude},${coors.latitude}');
+
+    final url =
+        '$_baseUrl/reverse.php?lat=${coors.latitude}&lon=${coors.longitude}';
+    final resp = await _dioBase.get(url);
+
+    final placeResponce = PlacesResponce.fromMap(resp.data);
+    return placeResponce;
   }
 }

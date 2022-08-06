@@ -54,6 +54,7 @@ class _MapScreenState extends State<MapScreen> {
                             initialLocation: locationState.lasKnownLocation!,
                             //values toSet para convertir el valor en un set
                             polylines: polylines.values.toSet(),
+                            markers: mapState.markers.values.toSet(),
                           ),
 
                           // TODO: botones...

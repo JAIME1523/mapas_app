@@ -42,7 +42,7 @@ class SearchDestinationDelegate extends SearchDelegate<SearchResut> {
           itemBuilder: (context, index) {
             final PlacesResponce place = state.places[index];
             return ListTile(
-              title: Text(place.displayPlace),
+              title: Text(place.displayPlace!),
               subtitle: Text(
                 place.displayName,
                 style: const TextStyle(fontSize: 12),
@@ -93,7 +93,7 @@ class SearchDestinationDelegate extends SearchDelegate<SearchResut> {
           },
         ),
         ...historia.map((place) =>  ListTile(
-              title: Text(place.displayPlace),
+              title: Text(place.displayPlace!),
               subtitle: Text(
                 place.displayName,
                 style: const TextStyle(fontSize: 12),
